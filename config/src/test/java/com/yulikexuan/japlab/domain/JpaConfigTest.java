@@ -4,42 +4,44 @@
 package com.yulikexuan.japlab.domain;
 
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
+import com.yulikexuan.japlab.bootstrap.JpaBootstrap;
 import org.apache.log4j.Logger;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
-@DisplayName("CompletableFuture Test - ")
+
+@DisplayName("Test JPA Configuration - ")
 @ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class JpaConfigTest {
-
-	static final String PERSISTENCE_UNIT_NAME = "jpa-persistence-unit";
+public class JpaConfigTest extends JpaBootstrap {
 
 	Logger log = Logger.getLogger(this.getClass().getName());
 
-	private static EntityManagerFactory entityManagerFactory;
+	private EntityManager entityManager;
 
-	@BeforeAll
-	public static void init() {
-		entityManagerFactory = Persistence.createEntityManagerFactory(
-				PERSISTENCE_UNIT_NAME);
+	@BeforeEach
+	void setUp() {
+		this.entityManager = this.getEntityManager();
 	}
 
-	@AfterAll
-	public static void close() {
-		entityManagerFactory.close();
+	@AfterEach
+	void tearDown() {
+		this.entityManager.close();
 	}
 
 	@Test
-	public void createProfessor() {
-		EntityManager em = this.entityManagerFactory.createEntityManager();
-		em.close();
+	public void test_Given_EntityManager_Then_Run_Transaction() {
+
+		// Given
+		EntityTransaction transaction = this.entityManager.getTransaction();
+
+		// When & Then
+		transaction.begin();
+		transaction.commit();
 	}
 
 }///:~
