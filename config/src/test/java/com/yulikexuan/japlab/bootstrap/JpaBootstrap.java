@@ -29,7 +29,7 @@ public class JpaBootstrap {
         entityManagerFactory.close();
     }
 
-    public EntityManager getEntityManager() {
+    public EntityManager entityManager() {
         return entityManagerFactory.createEntityManager();
     }
 
