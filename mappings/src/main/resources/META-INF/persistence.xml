@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.1"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+                                 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<!-- Define persistence unit -->
+	<persistence-unit name="jpa-persistence-unit">
+
+		<description>The persistence unit of the JpaForBeginners training.</description>
+
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+		<properties>
+
+			<!-- database connection -->
+			<property name="javax.persistence.jdbc.driver"
+					  value="org.postgresql.Driver" />
+			<property name="javax.persistence.jdbc.url"
+					  value="jdbc:postgresql://localhost:5432/jpalab" />
+			<property name="javax.persistence.jdbc.user"
+					  value="postgres" />
+			<property name="javax.persistence.jdbc.password"
+					  value="postgres" />
+
+			<!-- DON'T USE THIS IN PRODUCTION -->
+			<!-- automatically drop and create required database tables -->
+			<property name="javax.persistence.schema-generation.database.action"
+					  value="drop-and-create" />
+
+			<!-- generate create and drop scripts
+				<property name="javax.persistence.schema-generation.scripts.action"
+						  value="drop-and-create" />
+				<property name="javax.persistence.schema-generation.scripts.create-target"
+						  value="target/create-db.sql" />
+				<property name="javax.persistence.schema-generation.scripts.drop-target"
+						  value="target/drop-db.sql" />
+		    -->
+			<!-- database specific dialect -->
+			<property name="hibernate.dialect"
+					  value="org.hibernate.dialect.PostgreSQL95Dialect" />
+
+			<!-- format SQL statements in log messages -->
+			<property name="hibernate.format_sql" value="true" />
+
+			<!-- Config c3p0 Connection Pool -->
+
+			<!--
+			     Specifies the minimum number of connections c3p0 should
+			     maintain at any given time
+			     By default, it will maintain at least three connections
+			     This setting also defines the initial size of the pool
+			-->
+			<property name="hibernate.c3p0.min_size" value="5" />
+
+			<!--
+			     Specifies the maximum number of connections it can maintain at
+			     any given time
+			     By default, it will keep a maximum of 15 connections
+			-->
+			<property name="hibernate.c3p0.max_size" value="17" />
+
+			<!--
+			     Specifies how many connections it should try to acquire if the
+			     pool runs out of available connections
+			     By default, it will attempt to acquire three new connections
+			-->
+			<property name="hibernate.c3p0.acquire_increment" value="3" />
+
+			<!--
+			     Specifies the number of seconds an unused connection will be
+			     kept before being discarded
+			     By default, connections will never expire from the pool
+			-->
+			<property name="hibernate.c3p0.timeout" value="1800" />
+
+		</properties>
+
+	</persistence-unit>
+	
+</persistence>
+

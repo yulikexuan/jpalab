@@ -7,16 +7,15 @@ package com.yulikexuan.japlab.logging;
 import com.yulikexuan.japlab.AbstractTestCase;
 import com.yulikexuan.japlab.domain.Professor;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
+//@ExtendWith(MockitoExtension.class)
 @DisplayName("Test JPA Logging - ")
-@ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class JpaLoggingTest extends AbstractTestCase  {

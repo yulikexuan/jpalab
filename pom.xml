@@ -139,6 +139,7 @@
 
 	<modules>
 		<module>config</module>
+        <module>mappings</module>
 	</modules>
     
 </project>
