@@ -1,7 +1,7 @@
 //: com.yulikexuan.japlab.mappings.domain.PurchaseOrder.java
 
 
-package com.yulikexuan.japlab.mappings.domain;
+package com.yulikexuan.jpalab.mappings.domain;
 
 
 import lombok.AllArgsConstructor;

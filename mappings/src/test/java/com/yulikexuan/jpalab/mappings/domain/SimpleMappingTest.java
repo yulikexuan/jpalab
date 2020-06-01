@@ -1,7 +1,7 @@
-//: com.yulikexuan.japlab.mappings.domain.SimpleMappingTest.java
+//: com.yulikexuan.jpalab.mappings.domain.SimpleMappingTest.java
 
 
-package com.yulikexuan.japlab.mappings.domain;
+package com.yulikexuan.jpalab.mappings.domain;
 
 
 import com.yulikexuan.japlab.AbstractTestCase;

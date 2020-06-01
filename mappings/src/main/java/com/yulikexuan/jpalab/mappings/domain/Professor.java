@@ -1,13 +1,12 @@
 //: com.yulikexuan.japlab.mappings.domain.Professor.java
 
 
-package com.yulikexuan.japlab.mappings.domain;
+package com.yulikexuan.jpalab.mappings.domain;
 
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 
 @Getter
@@ -20,6 +19,9 @@ import javax.persistence.Id;
 public class Professor {
 
 	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "professor_generator")
+	@SequenceGenerator(name = "professor_generator", sequenceName = "professor_seq")
 	private Long id;
 
 	private Long version;
