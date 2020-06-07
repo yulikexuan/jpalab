@@ -10,6 +10,7 @@ import org.junit.jupiter.api.*;
 
 import javax.persistence.EntityTransaction;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 
@@ -27,19 +28,16 @@ class SimpleMappingTest extends AbstractTestCase {
         entitySuppliers = Map.of(
                 Professor.class.getSimpleName(),
                 () -> Professor.builder()
-                        .id(Long.valueOf(System.currentTimeMillis()))
                         .firstName("Jane")
                         .lastName("Doe")
                         .build(),
                 PurchaseOrder.class.getSimpleName(),
                 () -> PurchaseOrder.builder()
-                        .id(Long.valueOf(System.currentTimeMillis() + 1))
                         .customerName("John")
                         .amount(1234.56)
                         .build(),
                 OrderItem.class.getSimpleName(),
                 () -> OrderItem.builder()
-                        .id(Long.valueOf(System.currentTimeMillis() + 2))
                         .article("iPhoneX")
                         .quantity(10)
                         .build());
@@ -54,8 +52,12 @@ class SimpleMappingTest extends AbstractTestCase {
         transaction.begin();
 
         // When
-        this.entityManager.persist(entitySuppliers.get(
-                Professor.class.getSimpleName()).get());
+        Professor professor = (Professor) entitySuppliers.get(
+                Professor.class.getSimpleName()).get();
+
+        System.out.println(professor.getId());
+
+        this.entityManager.persist(professor);
         this.entityManager.persist(entitySuppliers.get(
                 PurchaseOrder.class.getSimpleName()).get());
         this.entityManager.persist(entitySuppliers.get(
