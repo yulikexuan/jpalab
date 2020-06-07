@@ -28,10 +28,11 @@ public class Professor {
 	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
 	private UUID id;
 
-	private Long version;
-
 	private String firstName;
 
 	private String lastName;
+
+	@Version
+	private Long version;
 
 }

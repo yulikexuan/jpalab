@@ -10,14 +10,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.UUID;
 
 
 @Data
-//@Entity
+@Entity
 @NoArgsConstructor
 @Builder @AllArgsConstructor
 public class PurchaseOrder {
@@ -27,10 +25,14 @@ public class PurchaseOrder {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
+    @Version
     private Long version;
 
     private Double amount;
 
     private String customerName;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
 }///:~
