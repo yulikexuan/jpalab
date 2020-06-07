@@ -17,7 +17,7 @@ import java.util.UUID;
 @Builder @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-@Entity
+//@Entity
 public class Professor {
 
 	@Id

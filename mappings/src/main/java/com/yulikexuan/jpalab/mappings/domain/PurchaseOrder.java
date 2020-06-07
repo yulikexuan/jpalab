@@ -17,7 +17,7 @@ import java.util.UUID;
 
 
 @Data
-@Entity
+//@Entity
 @NoArgsConstructor
 @Builder @AllArgsConstructor
 public class PurchaseOrder {
