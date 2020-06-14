@@ -1,42 +1,44 @@
-//: com.yulikexuan.japlab.mappings.domain.PurchaseOrder.java
+//: com.yulikexuan.jpalab.mappings.domain.Course.java
 
 
 package com.yulikexuan.jpalab.mappings.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Version;
 import javax.validation.constraints.Null;
 import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 import java.util.UUID;
 
 
-@Data
-@Entity
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @Builder @AllArgsConstructor
-public class PurchaseOrder {
+@Entity
+public class Course {
 
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
-    private Double amount;
+    private String name;
 
-    private String customerName;
+    private OffsetDateTime startDate;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    private OffsetTime beginLecture;
 
-    private OffsetDateTime orderTime;
+    private OffsetDateTime examTime;
 
     @Null
     @Version
