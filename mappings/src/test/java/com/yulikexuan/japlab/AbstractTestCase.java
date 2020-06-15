@@ -20,13 +20,13 @@ public abstract class AbstractTestCase extends JpaBootstrap {
     protected EntityManager entityManager;
 
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
         this.random = new Random(System.currentTimeMillis());
         this.entityManager = this.entityManager();
     }
 
     @AfterEach
-    void tearDown() {
+    protected void tearDown() {
         this.entityManager.close();
     }
 

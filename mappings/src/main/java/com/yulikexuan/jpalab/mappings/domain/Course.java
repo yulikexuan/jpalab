@@ -24,7 +24,7 @@ import java.util.UUID;
 @ToString
 @NoArgsConstructor
 @Builder @AllArgsConstructor
-@Entity
+// @Entity
 public class Course {
 
     @Id
