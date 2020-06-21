@@ -37,4 +37,8 @@ public abstract class AbstractTestCase extends JpaBootstrap {
                 .getAsLong();
     }
 
+    protected void closeEntityManager() {
+        this.entityManager.close();
+    }
+
 }///:~
