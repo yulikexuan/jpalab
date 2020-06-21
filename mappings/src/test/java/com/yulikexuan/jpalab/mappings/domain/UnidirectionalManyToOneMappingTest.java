@@ -1,9 +1,10 @@
-//: com.yulikexuan.jpalab.mappings.domain.BidirectionalManyToOneMappingTest.java
+//: com.yulikexuan.jpalab.mappings.domain.UnidirectionalManyToOneMappingTest.java
 
 
 package com.yulikexuan.jpalab.mappings.domain;
 
 
+import com.google.common.collect.ImmutableList;
 import com.yulikexuan.japlab.AbstractTestCase;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
@@ -20,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("Test Bidirectional Many to One Association - ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class BidirectionalManyToOneMappingTest extends AbstractTestCase {
+class UnidirectionalManyToOneMappingTest extends AbstractTestCase {
 
     private static ZoneOffset defaultZoneOffset;
 
@@ -60,40 +61,40 @@ class BidirectionalManyToOneMappingTest extends AbstractTestCase {
 
         Course course = this.entityManager.find(Course.class, courseId);
         Professor professor = this.entityManager.find(Professor.class, professorId);
-        assertThat(professor.getCourses()).isNotNull();
 
         // When
         course.setProfessor(professor);
 
         // Then
         transaction.commit();
-        assertThat(professor.hasCourse(course)).isTrue();
         assertThat(course.isTaughtBy(professor));
     }
 
     @Test
-    void test_Given_A_Professor_With_Courses_Then_Print_All_Course_Details() {
+    void test_Given_Courses_Then_Print_Their_Professors() {
 
         // Given
-        UUID profId = this.prepareProfessorWithCourse();
+        List<UUID> courseIds = this.prepareProfessorWithCourse();
         this.closeEntityManager();
 
         this.entityManager = this.entityManager();
         EntityTransaction transaction = this.entityManager.getTransaction();
         transaction.begin();
 
-        Professor professor = this.entityManager.find(Professor.class, profId);
-
-        professor.getCourses().stream()
-                .forEach(course -> System.out.printf(">>>>>>> Has course %s%n",
-                        course.getName()));
+        // When
+        List<Professor> professors = courseIds.stream()
+                .map(courseId -> this.entityManager.find(Course.class, courseId))
+                .map(Course::getProfessor)
+                .collect(ImmutableList.toImmutableList());
 
         transaction.commit();
 
-        assertThat(professor.getNumberOfCourses()).isEqualTo(2);
+        // Then
+        assertThat(professors.size()).isEqualTo(2);
+        assertThat(professors.get(0).getId()).isEqualTo(professors.get(1).getId());
     }
 
-    private UUID prepareProfessorWithCourse() {
+    private List<UUID> prepareProfessorWithCourse() {
 
         UUID professorId = this.createProfessor("Donald", "Trump");
 
@@ -136,11 +137,9 @@ class BidirectionalManyToOneMappingTest extends AbstractTestCase {
         course_1.setProfessor(prof);
         course_2.setProfessor(prof);
 
-        assertThat(prof.getNumberOfCourses()).isEqualTo(2);
-
         transaction.commit();
 
-        return professorId;
+        return List.of(courseId_1, courseId_2);
     }
 
     private UUID createCourse(String courseName, OffsetDateTime startDate,

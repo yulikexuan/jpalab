@@ -62,22 +62,6 @@ public class Course {
     @ManyToOne
     private Professor professor;
 
-    public void setProfessor(Professor professor) {
-
-        // Remove old association from old professor
-        if (Objects.nonNull(this.professor)) {
-            this.professor.removeCourse(this);
-        }
-
-        // add new association to new professor
-        if (Objects.nonNull(professor)) {
-            professor.addCourse(this);
-        }
-
-        // Finish setting professor
-        this.professor = professor;
-    }
-
     public boolean isTaughtBy(Professor professor) {
         return Objects.isNull(professor) ?
                 false : professor.equals(this.professor);
