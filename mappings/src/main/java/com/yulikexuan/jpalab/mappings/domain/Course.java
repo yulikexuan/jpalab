@@ -4,6 +4,8 @@
 package com.yulikexuan.jpalab.mappings.domain;
 
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -12,8 +14,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.Null;
 import java.time.OffsetDateTime;
-import java.time.OffsetTime;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -28,7 +30,6 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @Builder @AllArgsConstructor
 @Entity
@@ -53,34 +54,62 @@ public class Course {
 
     private String name;
 
-    private OffsetDateTime startDate;
+    @ManyToMany
+//    @JoinTable(name = "enrollments",
+//            joinColumns = @JoinColumn(name = "c_id"),
+//            inverseJoinColumns = @JoinColumn(name = "s_id"))
+    private Set<Student> students = Sets.newHashSet();
 
-    private OffsetTime beginLecture;
-
-    private OffsetDateTime examTime;
-
-    @ManyToOne
-    private Professor professor;
-
-    public void setProfessor(Professor professor) {
-
-        // Remove old association from old professor
-        if (Objects.nonNull(this.professor)) {
-            this.professor.removeCourse(this);
-        }
-
-        // add new association to new professor
-        if (Objects.nonNull(professor)) {
-            professor.addCourse(this);
-        }
-
-        // Finish setting professor
-        this.professor = professor;
+    public Set<Student> getStudents() {
+        return ImmutableSet.copyOf(this.students);
     }
 
-    public boolean isTaughtBy(Professor professor) {
-        return Objects.isNull(professor) ?
-                false : professor.equals(this.professor);
+    public void addStudent(Student student) {
+
+        if (Objects.nonNull(student)) {
+
+            if (Objects.isNull(this.students)) {
+                this.students = Sets.newHashSet();
+            }
+
+            this.students.add(student);
+
+            if (!student.hasCourse(this)) {
+                student.addCourse(this);
+            }
+        }
+    }
+
+    public void removeStudent(Student student) {
+        if (Objects.nonNull(this.students)) {
+            this.students.remove(student);
+            if ((Objects.nonNull(student)) && student.hasCourse(this)) {
+                student.removeCourse(this);
+            }
+        }
+    }
+
+    public boolean hasStudent(Student student) {
+        return Objects.isNull(this.students) ? false :
+                Objects.isNull(student) ? false :
+                        this.students.contains(student);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if ((Objects.isNull(o)) || (! (o instanceof Course))) {
+            return false;
+        }
+
+        final Course other = (Course) o;
+
+        return other.id.equals(this.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id.hashCode();
     }
 
 }///:~
