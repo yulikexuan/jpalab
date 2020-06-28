@@ -1,4 +1,4 @@
-//: com.yulikexuan.jpalab.mappings.domain.BidirectionalMany2ManyTest.java
+//: com.yulikexuan.jpalab.mappings.domain.UnidirectionalMany2ManyTest.java
 
 
 package com.yulikexuan.jpalab.mappings.domain;
@@ -23,9 +23,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("Test Many2Many Association Mapping - ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class BidirectionalMany2ManyTest extends AbstractTestCase {
+class UnidirectionalMany2ManyTest extends AbstractTestCase {
 
-    private static UUID courseId_1;
+    private static UUID studentId_1;
 
     @Test
     @Order(1)
@@ -49,26 +49,22 @@ class BidirectionalMany2ManyTest extends AbstractTestCase {
         Student student_1 = this.entityManager.find(Student.class, studentIds.get(0));
         Student student_2 = this.entityManager.find(Student.class, studentIds.get(1));
 
-        course_1.addStudent(student_1);
-        course_1.addStudent(student_2);
-        course_2.addStudent(student_1);
+        student_1.addCourse(course_1);
+        student_1.addCourse(course_2);
+
+        student_2.addCourse(course_2);
 
         transaction.commit();
 
-        courseId_1 = course_1.getId();
+        studentId_1 = student_1.getId();
 
         // When
-        Set<Student> studentsOfCourse_1 = course_1.getStudents();
-        Set<Student> studentsOfCourse_2 = course_2.getStudents();
-
         Set<Course> coursesOfStudent_1 = student_1.getCourses();
         Set<Course> coursesOfStudent_2 = student_2.getCourses();
 
         // Then
-        assertThat(studentsOfCourse_1).contains(student_1, student_2);
-        assertThat(studentsOfCourse_2).containsOnly(student_1);
         assertThat(coursesOfStudent_1).contains(course_1, course_2);
-        assertThat(coursesOfStudent_2).containsOnly(course_1);
+        assertThat(coursesOfStudent_2).containsOnly(course_2);
     }
 
     @Test
@@ -79,19 +75,19 @@ class BidirectionalMany2ManyTest extends AbstractTestCase {
         EntityTransaction transaction = this.entityManager.getTransaction();
         transaction.begin();
 
-        Course course = this.entityManager.find(Course.class, courseId_1);
+        Student student = this.entityManager.find(Student.class, studentId_1);
 
         // When
-        Set<Student> students = course.getStudents();
+        Set<Course> courses = student.getCourses();
 
-        List<String> firstNames = students.stream()
-                .map(Student::getFirstName)
+        List<String> courseNames = courses.stream()
+                .map(Course::getName)
                 .collect(ImmutableList.toImmutableList());
 
         transaction.commit();
 
         // Then
-        assertThat(firstNames).contains("Mike", "Tommee");
+        assertThat(courseNames).contains("Core Java", "Java JPA");
     }
 
     private List<UUID> createCourses(String... courseNames) {

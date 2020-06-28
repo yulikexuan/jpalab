@@ -49,7 +49,10 @@ public class Student {
     @Enumerated(EnumType.STRING)
     private StudentStatus state;
 
-    @ManyToMany(mappedBy = "students")
+    @ManyToMany
+    //    @JoinTable(name = "enrollments",
+    //            joinColumns = @JoinColumn(name = "c_id"),
+    //            inverseJoinColumns = @JoinColumn(name = "s_id"))
     private Set<Course> courses = Sets.newHashSet();
 
     public Set<Course> getCourses() {
@@ -65,19 +68,12 @@ public class Student {
             }
 
             this.courses.add(course);
-
-            if (!course.hasStudent(this)) {
-                course.addStudent(this);
-            }
         }
     }
 
     public void removeCourse(Course course) {
         if (Objects.nonNull(this.courses)) {
             this.courses.remove(course);
-            if ((Objects.nonNull(course)) && course.hasStudent(this)) {
-                course.removeStudent(this);
-            }
         }
     }
 
