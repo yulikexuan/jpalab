@@ -31,24 +31,9 @@ public class BidirectOneToOneTest extends AbstractTestCase  {
     }
 
     private void create_One_To_One_Association_Between_Course_And_Curriculum() {
-
-        // Given
-        UUID courseId = this.createCourse("Thinking in Java");
-        UUID curriculumId = this.createCurriculum(CURRICULUM_DESCRIPTION);
-
-        EntityTransaction transaction = this.entityManager.getTransaction();
-        transaction.begin();
-
-        Curriculum curriculum = this.entityManager.find(Curriculum.class, curriculumId);
-        Course course = this.entityManager.find(Course.class, courseId);
-
-        curriculum.setCourse(course);
-        course.setCurriculum(curriculum);
-
-        // Then
-        transaction.commit();
-
-        currentCourseId = courseId;
+        Course course = this.createCourse("Thinking in Java");
+        UUID curriculumId = this.createCurriculum(CURRICULUM_DESCRIPTION, course);
+        currentCourseId = course.getId();
     }
 
     @Test
@@ -70,7 +55,7 @@ public class BidirectOneToOneTest extends AbstractTestCase  {
         transaction.commit();
     }
 
-    private UUID createCourse(String courseName) {
+    private Course createCourse(String courseName) {
 
         EntityTransaction transaction = this.entityManager.getTransaction();
         transaction.begin();
@@ -82,17 +67,19 @@ public class BidirectOneToOneTest extends AbstractTestCase  {
 
         transaction.commit();
 
-        return course.getId();
+        return course;
     }
 
-    private UUID createCurriculum(String description) {
+    private UUID createCurriculum(String description, Course course) {
 
         EntityTransaction transaction = this.entityManager.getTransaction();
         transaction.begin();
 
+        course = this.entityManager.merge(course);
         Curriculum curriculum = new Curriculum();
         curriculum.setDescription(description);
-
+        curriculum.setCourse(course);
+        course.setCurriculum(curriculum);
         this.entityManager.persist(curriculum);
 
         transaction.commit();

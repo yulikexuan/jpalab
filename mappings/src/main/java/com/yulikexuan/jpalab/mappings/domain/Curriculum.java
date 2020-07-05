@@ -23,8 +23,6 @@ import java.util.UUID;
 public class Curriculum {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
     @Null
@@ -41,8 +39,10 @@ public class Curriculum {
 
     private String description;
 
+
     @OneToOne
-    // @JoinColumn(name = "c_id")
+    @JoinColumn(name = "id")
+    @MapsId
     private Course course;
 
 }///:~
