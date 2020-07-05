@@ -48,6 +48,12 @@ public class Course {
     @UpdateTimestamp
     private OffsetDateTime lastModifiedTime;
 
+    /*
+     * Bidirectional one to one association
+     *
+     * If removing OneToOne annotation here, then applying unidirectional
+     * one to one association
+     */
     @OneToOne(mappedBy = "course")
     private Curriculum curriculum;
 
