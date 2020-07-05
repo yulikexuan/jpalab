@@ -1,4 +1,4 @@
-//: com.yulikexuan.jpalab.mappings.domain.Course.java
+//: com.yulikexuan.jpalab.mappings.domain.Curriculum.java
 
 
 package com.yulikexuan.jpalab.mappings.domain;
@@ -15,21 +15,12 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 
-/*
- * Course entity is the owning side of the association between Course and Professor
- * Because course table has a column professor_id but professor table have nothing
- * from course table
- *
- * The owning side should define the association
- * The referencing side, Professor, just references the other side of the
- * association
- */
 @Getter
 @Setter
+@Entity
 @NoArgsConstructor
 @Builder @AllArgsConstructor
-@Entity
-public class Course {
+public class Curriculum {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -48,9 +39,10 @@ public class Course {
     @UpdateTimestamp
     private OffsetDateTime lastModifiedTime;
 
-    @OneToOne(mappedBy = "course")
-    private Curriculum curriculum;
+    private String description;
 
-    private String name;
+    @OneToOne
+    // @JoinColumn(name = "c_id")
+    private Course course;
 
 }///:~
