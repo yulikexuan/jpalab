@@ -36,6 +36,7 @@ public class BidirectOneToOneTest extends AbstractTestCase  {
         // Then
         assertThat(currentPostId).isEqualTo(currentPostDetailsId);
     }
+
     // Only ONE SELECT statement should be executed
     @Test
     @Order(2)
@@ -52,6 +53,24 @@ public class BidirectOneToOneTest extends AbstractTestCase  {
 
         // Then
         assertThat(postDetails.getDestination()).isEqualTo(DESTINATION);
+        transaction.commit();
+    }
+
+    // Only ONE SELECT statement should be executed
+    @Test
+    @Order(3)
+    void test_Fetch_Lazy_Does_Work_On_Parent() {
+
+        // Given
+        EntityTransaction transaction = this.entityManager.getTransaction();
+        transaction.begin();
+
+        // When
+        log.info(">>>>>>> Reload the Parent: ");
+        Post post = this.entityManager.find(Post.class, currentPostId);
+
+        // Then
+        assertThat(post.getTitle()).isEqualTo(POST_TITLE);
         transaction.commit();
     }
 
