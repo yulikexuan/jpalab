@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 
 import javax.persistence.EntityTransaction;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,84 +21,88 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class BidirectOneToOneTest extends AbstractTestCase  {
 
-    private static final String CURRICULUM_DESCRIPTION = "Learning Java Language";
+    private static final String DESTINATION = "Yul";
+    private static final String POST_TITLE = "Learning Java Language";
 
-    private static UUID currentCourseId;
+    private static UUID currentPostId;
+    private static UUID currentPostDetailsId;
 
     @Test
     @Order(1)
-    void test_Given_A_Course_And_A_Curriculum_Then_Create_Bi_One_To_One_Association() {
-        this.create_One_To_One_Association_Between_Course_And_Curriculum();
-    }
+    void test_One_To_One_Association() {
 
-    private void create_One_To_One_Association_Between_Course_And_Curriculum() {
-
-        // Given
-        UUID courseId = this.createCourse("Thinking in Java");
-        UUID curriculumId = this.createCurriculum(CURRICULUM_DESCRIPTION);
-
-        EntityTransaction transaction = this.entityManager.getTransaction();
-        transaction.begin();
-
-        Curriculum curriculum = this.entityManager.find(Curriculum.class, curriculumId);
-        Course course = this.entityManager.find(Course.class, courseId);
-
-        curriculum.setCourse(course);
-        course.setCurriculum(curriculum);
+        // Given & When
+        this.createEntities(POST_TITLE, DESTINATION);
 
         // Then
-        transaction.commit();
-
-        currentCourseId = courseId;
+        assertThat(currentPostId).isNotEqualTo(currentPostDetailsId);
     }
 
+    // Two SELECT statements should be executed
     @Test
     @Order(2)
-    void test_One_To_One_Association_Between_Course_And_Curriculum() {
+    void test_Fetch_Lazy_Does_Not_Work_On_Parent() {
 
         // Given
+        if (Objects.isNull(currentPostId)) {
+            this.createEntities(POST_TITLE, DESTINATION);
+        }
+
         EntityTransaction transaction = this.entityManager.getTransaction();
         transaction.begin();
-
-        Course course = this.entityManager.find(Course.class, currentCourseId);
 
         // When
-        String curriculumDescription = course.getCurriculum().getDescription();
+        log.info(">>>>>>> Reload the Parent: ");
+        Post post = this.entityManager.find(Post.class, currentPostId);
 
         // Then
-        assertThat(curriculumDescription).isEqualTo(CURRICULUM_DESCRIPTION);
-
+        assertThat(post.getTitle()).isEqualTo(POST_TITLE);
         transaction.commit();
     }
 
-    private UUID createCourse(String courseName) {
+    // Only ONE SELECT statement should be executed
+    @Test
+    @Order(3)
+    void test_Fetch_Lazy_Does_Work_On_Child() {
+
+        // Given
+        if (Objects.isNull(currentPostDetailsId)) {
+            this.createEntities(POST_TITLE, DESTINATION);
+        }
 
         EntityTransaction transaction = this.entityManager.getTransaction();
         transaction.begin();
 
-        Course course = new Course();
-        course.setName(courseName);
+        // When
+        log.info(">>>>>>> Reload the Child: ");
+        PostDetails postDetails = this.entityManager.find(PostDetails.class,
+                currentPostDetailsId);
 
-        this.entityManager.persist(course);
-
+        // Then
+        assertThat(postDetails.getDestination()).isEqualTo(DESTINATION);
         transaction.commit();
-
-        return course.getId();
     }
 
-    private UUID createCurriculum(String description) {
+    private void createEntities(String title, String destination) {
 
+        log.info(">>>>>>> Create Entities: ");
         EntityTransaction transaction = this.entityManager.getTransaction();
         transaction.begin();
 
-        Curriculum curriculum = new Curriculum();
-        curriculum.setDescription(description);
+        Post post = new Post();
+        post.setTitle(title);
 
-        this.entityManager.persist(curriculum);
+        PostDetails postDetails = new PostDetails();
+        postDetails.setDestination(destination);
+        post.setPostDetails(postDetails);
+
+        this.entityManager.persist(post);
+        this.entityManager.persist(postDetails);
 
         transaction.commit();
 
-        return curriculum.getId();
+        currentPostId = post.getId();
+        currentPostDetailsId = postDetails.getId();
     }
 
 }///:~

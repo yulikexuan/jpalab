@@ -1,4 +1,4 @@
-//: com.yulikexuan.jpalab.mappings.domain.Curriculum.java
+//: com.yulikexuan.jpalab.mappings.domain.Post.java
 
 
 package com.yulikexuan.jpalab.mappings.domain;
@@ -12,15 +12,15 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.Null;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 
-@Getter
-@Setter
-@Entity
+@Getter @Setter
 @NoArgsConstructor
 @Builder @AllArgsConstructor
-public class Curriculum {
+@Entity
+public class Post {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -39,10 +39,21 @@ public class Curriculum {
     @UpdateTimestamp
     private OffsetDateTime lastModifiedTime;
 
-    private String description;
+    private String title;
 
-    @OneToOne
-    // @JoinColumn(name = "c_id")
-    private Course course;
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY, optional = false)
+    private PostDetails postDetails;
+
+    public void setPostDetails(PostDetails postDetails) {
+        if (Objects.isNull(postDetails)) {
+            if (Objects.isNull(this.postDetails)) {
+                this.postDetails.setPost(null);
+            }
+        } else {
+            postDetails.setPost(this);
+        }
+        this.postDetails = postDetails;
+    }
 
 }///:~
