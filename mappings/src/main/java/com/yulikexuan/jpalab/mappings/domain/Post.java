@@ -1,4 +1,4 @@
-//: com.yulikexuan.jpalab.mappings.domain.Course.java
+//: com.yulikexuan.jpalab.mappings.domain.Post.java
 
 
 package com.yulikexuan.jpalab.mappings.domain;
@@ -12,24 +12,15 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import javax.validation.constraints.Null;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 
-/*
- * Course entity is the owning side of the association between Course and Professor
- * Because course table has a column professor_id but professor table have nothing
- * from course table
- *
- * The owning side should define the association
- * The referencing side, Professor, just references the other side of the
- * association
- */
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 @Builder @AllArgsConstructor
 @Entity
-public class Course {
+public class Post {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -48,15 +39,21 @@ public class Course {
     @UpdateTimestamp
     private OffsetDateTime lastModifiedTime;
 
-    /*
-     * Bidirectional one to one association
-     *
-     * If removing OneToOne annotation here, then applying unidirectional
-     * one to one association
-     */
-    @OneToOne(mappedBy = "course")
-    private Curriculum curriculum;
+    private String title;
 
-    private String name;
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY, optional = false)
+    private PostDetails postDetails;
+
+    public void setPostDetails(PostDetails postDetails) {
+        if (Objects.isNull(postDetails)) {
+            if (Objects.isNull(this.postDetails)) {
+                this.postDetails.setPost(null);
+            }
+        } else {
+            postDetails.setPost(this);
+        }
+        this.postDetails = postDetails;
+    }
 
 }///:~

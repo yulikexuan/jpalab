@@ -1,4 +1,4 @@
-//: com.yulikexuan.jpalab.mappings.domain.Curriculum.java
+//: com.yulikexuan.jpalab.mappings.domain.PostDetails.java
 
 
 package com.yulikexuan.jpalab.mappings.domain;
@@ -7,7 +7,6 @@ package com.yulikexuan.jpalab.mappings.domain;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.Null;
@@ -15,14 +14,15 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 
-@Getter
-@Setter
-@Entity
+@Getter @Setter
 @NoArgsConstructor
 @Builder @AllArgsConstructor
-public class Curriculum {
+@Entity
+public class PostDetails {
 
     @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
     @Null
@@ -33,16 +33,9 @@ public class Curriculum {
     @CreationTimestamp
     private OffsetDateTime creationTime;
 
-    @Null
-    @UpdateTimestamp
-    private OffsetDateTime lastModifiedTime;
+    String destination;
 
-    private String description;
-
-
-    @OneToOne
-    @JoinColumn(name = "id")
-    @MapsId
-    private Course course;
+    @OneToOne(fetch = FetchType.LAZY)
+    private Post post;
 
 }///:~
