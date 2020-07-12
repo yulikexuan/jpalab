@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 
 import javax.persistence.EntityTransaction;
-import java.util.Objects;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,41 +34,14 @@ public class BidirectOneToOneTest extends AbstractTestCase  {
         this.createEntities(POST_TITLE, DESTINATION);
 
         // Then
-        assertThat(currentPostId).isNotEqualTo(currentPostDetailsId);
+        assertThat(currentPostId).isEqualTo(currentPostDetailsId);
     }
-
-    // Two SELECT statements should be executed
-    @Test
-    @Order(2)
-    void test_Fetch_Lazy_Does_Not_Work_On_Parent() {
-
-        // Given
-        if (Objects.isNull(currentPostId)) {
-            this.createEntities(POST_TITLE, DESTINATION);
-        }
-
-        EntityTransaction transaction = this.entityManager.getTransaction();
-        transaction.begin();
-
-        // When
-        log.info(">>>>>>> Reload the Parent: ");
-        Post post = this.entityManager.find(Post.class, currentPostId);
-
-        // Then
-        assertThat(post.getTitle()).isEqualTo(POST_TITLE);
-        transaction.commit();
-    }
-
     // Only ONE SELECT statement should be executed
     @Test
-    @Order(3)
+    @Order(2)
     void test_Fetch_Lazy_Does_Work_On_Child() {
 
         // Given
-        if (Objects.isNull(currentPostDetailsId)) {
-            this.createEntities(POST_TITLE, DESTINATION);
-        }
-
         EntityTransaction transaction = this.entityManager.getTransaction();
         transaction.begin();
 
@@ -94,7 +66,8 @@ public class BidirectOneToOneTest extends AbstractTestCase  {
 
         PostDetails postDetails = new PostDetails();
         postDetails.setDestination(destination);
-        post.setPostDetails(postDetails);
+
+        postDetails.setPost(post);
 
         this.entityManager.persist(post);
         this.entityManager.persist(postDetails);

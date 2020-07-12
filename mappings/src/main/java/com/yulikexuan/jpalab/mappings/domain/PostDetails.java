@@ -21,8 +21,6 @@ import java.util.UUID;
 public class PostDetails {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
     @Null
@@ -35,6 +33,7 @@ public class PostDetails {
 
     String destination;
 
+    @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     private Post post;
 

@@ -41,19 +41,4 @@ public class Post {
 
     private String title;
 
-    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY, optional = false)
-    private PostDetails postDetails;
-
-    public void setPostDetails(PostDetails postDetails) {
-        if (Objects.isNull(postDetails)) {
-            if (Objects.isNull(this.postDetails)) {
-                this.postDetails.setPost(null);
-            }
-        } else {
-            postDetails.setPost(this);
-        }
-        this.postDetails = postDetails;
-    }
-
 }///:~
