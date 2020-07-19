@@ -11,7 +11,7 @@ import org.junit.jupiter.api.*;
 
 import javax.persistence.EntityTransaction;
 import java.time.OffsetDateTime;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,7 +63,7 @@ public class CustomerPurchaseOrderTest extends AbstractTestCase {
         Customer customer = this.entityManager.find(Customer.class, customerId);
 
         // When
-        List<PurchaseOrder> purchaseOrders = customer.getPurchaseOrders();
+        Set<PurchaseOrder> purchaseOrders = customer.getPurchaseOrders();
 
         // Then
         assertThat(purchaseOrders).hasSize(2);

@@ -23,4 +23,22 @@ public class PurchaseOrder extends BaseEntity {
 
     @ManyToOne
     private Customer customer;
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (! (o instanceof PurchaseOrder)) {
+            return false;
+        }
+
+        final PurchaseOrder other = (PurchaseOrder) o;
+
+        return this.id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id.hashCode();
+    }
+
 }///:~
